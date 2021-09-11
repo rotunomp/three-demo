@@ -1,0 +1,128 @@
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0
+}
+
+main {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100vw;
+  height: 100vh;
+}
+
+h1 {
+  color: #FFFFFF;
+  font-family: 'Raleway', sans-serif;
+  font-size: 8em;
+  margin: 0;
+}
+
+#header {
+  padding-top: 40vh;
+  padding-left: 10vw;
+  padding-right: 10vw;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+h2 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 5em;
+}
+
+p {
+  font-family: 'Raleway', sans-serif;
+  font-size: 2em;
+}
+
+#loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+}
+
+#loading.loaded {
+  opacity: 0;
+  transition: opacity 1s ease-in;
+}
+
+.left-arrow {
+  cursor: pointer;
+  position: absolute;
+  top: 50vh;
+  left: 2vw;
+  z-index: 1000;
+  color: white;
+  font-size: 5em;
+}
+
+.right-arrow {
+  cursor: pointer;
+  position: absolute;
+  top: 50vh;
+  left: 98vw;
+  z-index: 1000;
+  color: white;
+  font-size: 5em;
+}
+
+.disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+#display-box {
+  position: absolute;
+  background-color: black;
+  border: white 2px solid;
+  transition: all 0.5s linear;
+  z-index: 100;
+  color: white;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.5em;
+  padding: 10px;
+  text-align: justify;
+}
+
+#display-box.left {
+  left: 5vw;
+  top: 10vh;
+  height: 80vh;
+  width: 35vw;
+}
+
+#display-box.right {
+  left: 98vw;
+}
+
+#display-box.center {
+  height: 40vh;
+  width: 50vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#display-box.shrink {
+  height: 5vh;
+  width: 50vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.flex {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
