@@ -1,7 +1,15 @@
 import * as THREE from 'three';
+import * as TWEEN from '@tweenjs/tween.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {GridHelper} from "three";
-import {typewriter, hideElement, showElement, changeDisplay} from "./helpers";
+import {typewriter, clearTypewriter, hideElement, showElement, changeDisplay, flashDisplay} from "./helpers";
+import * as TH from "./ThreeHelper";
+import {GUI} from "three/examples/jsm/libs/dat.gui.module";
+
+document.addEventListener("DOMContentLoaded", function(){
+    document.body.removeAttribute('hidden');
+});
+
 
 document.querySelector('.left-arrow').addEventListener('click', event => {
     previousStep();
@@ -9,21 +17,24 @@ document.querySelector('.left-arrow').addEventListener('click', event => {
 document.querySelector('.right-arrow').addEventListener('click', event => {
     nextStep();
 });
+document.querySelector('#begin').addEventListener('click', event => {
+    document.querySelector('#begin').style.visibility = "hidden";
+    nextStep();
+});
 
-// Constants for initial variables
-const circleRotateSpeed = .02;
-const circleTranslateXSpeed = -.2;
-const circleTranslateYSpeed = .1;
+// Initial Positions for the objects in space. These will be used for determining where to focus things
 const circleInitX = 40;
 const circleInitY = 10;
-const circleMinX = 30;
-const circleMaxY = 15;
-
+const knotInitX = 25;
+const knotInitY = 20;
+const boxInitX = -25;
+const boxInitY = -20;
+const coneInitX = boxInitX + 5;
+const coneInitY = boxInitY - 5;
+const cameraInitZ = 30;
 
 // Variable which keeps the default animator from going while a transition is happening
 let transitioning = false;
-
-console.log(window.innerWidth, window.innerHeight);
 
 // A little demo
 window.setTimeout(loopDemo, 1000);
@@ -32,21 +43,32 @@ const scene = new THREE.Scene();
 
 // The camera is used to view the objects in the scene. A PerspectiveCamera mimics the view of a human eye
 const camera = new THREE.PerspectiveCamera(1, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.setZ(30);
+camera.position.setZ(cameraInitZ);
 
 // The renderer renders the objects we're gonna view
 const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#bg')
+    canvas: document.querySelector('#bg'),
 })
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-function addToScene(array)
-{
-    array.forEach(item => {
-        scene.add(item);
-    });
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
 }
+
+// GUI helper for changing properties
+const gui = TH.makeGui();
+const cameraFolder = gui.addFolder('camera');
+cameraFolder.add(camera, 'fov');
+cameraFolder.add(camera.position, 'x');
+cameraFolder.add(camera.position, 'y');
+cameraFolder.add(camera.position, 'z');
+
 
 function loopDemo()
 {
@@ -62,8 +84,8 @@ function loopDemo()
     const knotGeometry = new THREE.TorusKnotGeometry(8, 2, 37, 12, 1, 2);
     const knotMaterial = new THREE.MeshStandardMaterial({color: 0xEF959D});
     const knot = new THREE.Mesh(knotGeometry, knotMaterial);
-    knot.position.setY(20);
-    knot.position.setX(25);
+    knot.position.setX(knotInitX);
+    knot.position.setY(knotInitY);
 
     // And to view the torus knot, we gotta add a light source
     let pointLight = new THREE.PointLight(0xFFFFFF);
@@ -92,8 +114,17 @@ function loopDemo()
     const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
     const boxMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF, wireframe: true});
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
-    box.position.setY(-20)
-    box.position.setX(-25)
+    box.position.setX(boxInitX)
+    box.position.setY(boxInitY)
+
+    // Parametric geometry?
+    // const paraGeometry = new THREE.ParametricGeometry(THREE.ParametricGeometries.klein, 25, 25 );
+    const coneGeometry = new THREE.ConeGeometry( 5, 5, 4 );
+    const coneMaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, wireframe: true} );
+    const cone = new THREE.Mesh( coneGeometry, coneMaterial );
+    cone.position.setX(coneInitX);
+    cone.position.setY(coneInitY);
+
 
     // Add a GridHelper to get an idea where we are in space
     const gridHelper = new GridHelper(200, 50);
@@ -102,23 +133,30 @@ function loopDemo()
     const controls = new OrbitControls(camera, renderer.domElement)
 
     // Add everything to the scene
-    addToScene([
+    TH.addToScene(scene, [
         circle,
         knot,
-        pointLight,
         ambientLight,
         box,
+        cone,
         // gridHelper
+    ], gui, [
+        pointLight,
     ]);
 
     Array(200).fill().forEach(addStar);
 
     // Animate loop
-    let left = true;
-    function animate() {
-        // Don't do the default animation while a transition to another scene is happening
-        if(transitioning) return;
+    // Constants for animation
+    const circleRotateSpeed = .02;
+    const circleTranslateXSpeed = -.2;
+    const circleTranslateYSpeed = .1;
+    const circleMinX = 30;
+    const circleMaxY = 15;
 
+    const circleVector = new THREE.Vector3(circleInitX, circleInitY, 0);
+
+    function animate() {
         requestAnimationFrame(animate);
 
         // Rotate the circle
@@ -146,13 +184,22 @@ function loopDemo()
         knot.rotateY(.0075);
         knot.rotateZ(.0075);
 
+        // rotate the box
         box.rotateX(.01);
         box.rotateY(.01);
         box.rotateZ(.01);
 
-        // camera.rotateZ(0.01);
+        // Move the cone around the box
+        cone.rotateX(.02);
+        cone.rotateY(.02);
+        cone.rotateZ(.02);
+
+        // cone.rotateOnAxis(circleVector, .001);
+
 
         // controls.update();
+        TWEEN.update();
+        camera.updateProjectionMatrix();
         renderer.render(scene, camera);
     }
 
@@ -168,18 +215,15 @@ function loopDemo()
 let currentStep = 1;
 function nextStep() {
     if (transitioning) return;
-    console.log('next Step');
-    startTransition();
-    loadStep(currentStep + 1);
+    loadStep(1);
 }
 function previousStep() {
     if (transitioning) return;
-    console.log('previous Step');
-    loadStep(currentStep - 1);
+    loadStep(-1);
 }
 
-function loadStep(step) {
-    console.log('transitioning...');
+function loadStep(increment) {
+    let step = currentStep + increment;
 
     switch (step) {
         case 1:
@@ -200,97 +244,86 @@ function loadStep(step) {
                 four_three();
             }
             break;
-        default:
-            alert('Step not defined!');
+        case 4:
+            if(currentStep === 3) {
+                three_four();
+            }
+            else {
+                four_three();
+            }
             break;
+        default:
+            return;
     }
 
     currentStep = step;
-    console.log('done transitioning');
-    transitioning = false;
 }
 
-function changeFov(fov, times, interval) {
-    let counter = 0;
+// Display Box Typing Speed
+const displayTypingSpeed = 6;
+const headerTypingSpeed = 100;
 
-    function doIt() {
-        camera.fov = camera.fov + fov;
-        camera.updateProjectionMatrix();
-    }
-
-    function repeat() {
-        if(counter > times) return;
-
-        setTimeout(() => {
-            doIt();
-            counter++;
-            repeat();
-        }, interval);
-    }
-
-    repeat();
-}
-
+// Zoom out
 function one_two() {
     startTransition();
-    changeFov(0.1, 1000, 10);
+    TH.smoothChangeFov(camera, 110, 11000);
 
     let timer = 0;
-    const headerSpeed = 100;
 
-    typewriter('Welcome', 'header', headerSpeed);
+    typewriter('Welcome', 'header', headerTypingSpeed);
     timer = timer + 2000;
-    setTimeout(() => typewriter('Three.js demo', 'header', headerSpeed), timer);
+    setTimeout(() => typewriter('Three.js demo', 'header', headerTypingSpeed), timer);
     timer = timer + 3000;
-    setTimeout(() => typewriter('Sit back and enjoy', 'header', headerSpeed), timer);
+    setTimeout(() => typewriter('Sit back and enjoy', 'header', headerTypingSpeed), timer);
     timer = timer + 5000;
     setTimeout(() => hideElement('header'), timer);
     timer = timer + 500;
-    setTimeout(() => {
-        const flashSpeed = 80;
-        showElement('display-box');
-        setTimeout(() => hideElement('display-box'), flashSpeed);
-        setTimeout(() => showElement('display-box'), flashSpeed * 2);
-        setTimeout(() => hideElement('display-box'), flashSpeed * 3);
-        setTimeout(() => showElement('display-box'), flashSpeed * 4);
-    }, timer);
+    setTimeout(flashDisplay, timer);
     timer = timer + 500;
     setTimeout(() => {
         changeDisplay('center');
-        setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box', 6), 500);
+        setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', 6, endTransition), 500);
     }, timer)
-    timer = timer + 3000;
-    setTimeout(() => endTransition(), timer);
 }
 
+// Move to Loop
 function two_three() {
     startTransition();
-    // camera.rotateY(10);
-    // camera.rotateX(10);
-    camera.translateY(20);
-    camera.translateX(16);
-    changeFov(-0.1, 100, 10);
-    camera.updateProjectionMatrix();
-    typewriter('', 'display-box');
-    changeDisplay('left');
-    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box', 6), 1000);
-    endTransition();
+    TH.smoothCameraPosition(camera, {x: 16, y: 20, z: cameraInitZ - 10}, 1000);
+    flashDisplay();
+    setTimeout(() => changeDisplay('left'), 500);
+    // changeDisplay('left');
+    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
 }
 
 function three_two() {
     startTransition();
-    camera.translateY(-20);
-    camera.translateX(-16);
-    changeFov(0.1, 100, 10);
-    camera.updateProjectionMatrix();
-    typewriter('', 'display-box');
-    changeDisplay('center');
-    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box', 6), 1000);
-    setTimeout(() => endTransition(), 1500);
+    TH.smoothCameraPosition(camera, {x: 0, y: 0, z: cameraInitZ}, 1000)
+    flashDisplay();
+    setTimeout(() => changeDisplay('center'), 500);
+    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
+}
+
+// Move to Box wireframe
+function three_four () {
+    startTransition();
+    TH.smoothCameraPosition(camera, {x: boxInitX + 10, y: boxInitY, z: cameraInitZ - 10}, 1000)
+    flashDisplay();
+    setTimeout(() => changeDisplay('right'), 500);
+    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
 }
 
 function four_three() {
-    console.log('four_three');
+    startTransition();
+    TH.smoothCameraPosition(camera, {x: 16, y: 20, z: cameraInitZ - 10}, 1000);
+    flashDisplay();
+    setTimeout(() => changeDisplay('left'), 500);
+    // changeDisplay('left');
+    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
+}
+
+function five_four() {
+    console.log('five_four');
 }
 
 function startTransition() {
@@ -301,6 +334,13 @@ function startTransition() {
 
 function endTransition() {
     transitioning = false;
-    document.querySelector('.left-arrow').classList.remove('disabled');
-    document.querySelector('.right-arrow').classList.remove('disabled');
+    if(currentStep > 2)
+    {
+        document.querySelector('.left-arrow').classList.remove('disabled');
+    }
+
+    if(currentStep < 4)
+    {
+        document.querySelector('.right-arrow').classList.remove('disabled');
+    }
 }

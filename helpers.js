@@ -1,20 +1,23 @@
-const bezierFunctionCall = (cubed, squared, linear, constant, duration, frequency, func) => {
-    // Generate an array of values which represent the amount of time
+const clearTypewriter = (elementId) => {
+    document.querySelector(`#${elementId}`).innerHTML = '';
 }
 
-const typewriter = (text, elementId, speed = 20, currentText = '', position = 0) => {
-    if(text === '') {
-        document.querySelector(`#${elementId}`).innerHTML = text;
+const typewriter = (text, elementId, speed = 20, callback = () => {}, currentText = '', position = 0) => {
+
+    if (currentText === '') clearTypewriter(elementId);
+
+    if (currentText === text)
+    {
+        setTimeout(callback, 500);
         return;
     }
-    if (currentText === text) return;
 
     currentText += text.charAt(position);
     position++;
     document.querySelector(`#${elementId}`).innerHTML = currentText;
 
     setTimeout(() => {
-        typewriter(text, elementId, speed, currentText, position)
+        typewriter(text, elementId, speed, callback, currentText, position)
     }, speed);
 }
 
@@ -31,4 +34,14 @@ const changeDisplay = (className) => {
     document.querySelector('#display-box').classList.add(className);
 }
 
-export {typewriter, hideElement, showElement, changeDisplay};
+const flashDisplay = () => {
+    clearTypewriter('display-box-content');
+    const flashSpeed = 80;
+    showElement('display-box');
+    setTimeout(() => hideElement('display-box'), flashSpeed);
+    setTimeout(() => showElement('display-box'), flashSpeed * 2);
+    setTimeout(() => hideElement('display-box'), flashSpeed * 3);
+    setTimeout(() => showElement('display-box'), flashSpeed * 4);
+}
+
+export {typewriter, clearTypewriter, hideElement, showElement, changeDisplay, flashDisplay};

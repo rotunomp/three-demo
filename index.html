@@ -13,17 +13,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Three Test</title>
 </head>
-<body>
+<body hidden>
 <div id="loading">
     <h2>Loading</h2>
 </div>
 <div id="loaded">
+    <div id="gui"></div>
     <canvas id="bg"></canvas>
-    <span class="left-arrow">&#12296;</span>
-    <span class="right-arrow">&#12297;</span>
+    <div id="begin">Click anywhere to begin</div>
     <script type="module" src="/main.js"></script>
     <section>
-        <div id="display-box" class="shrink" hidden></div>
+        <div id="display-box" class="shrink" hidden>
+            <div id="display-box-content"></div>
+            <div class="flex arrow-box">
+                <div class="left-arrow disabled">&#12296; Back</div>
+                <div class="right-arrow">Next &#12297;</div>
+            </div>
+        </div>
     </section>
 
     <main>
