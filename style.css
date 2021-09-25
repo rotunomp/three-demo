@@ -15,7 +15,7 @@ main {
 h1 {
   color: #FFFFFF;
   font-family: 'Raleway', sans-serif;
-  font-size: 8em;
+  font-size: 8vw;
   margin: 0;
 }
 
@@ -28,12 +28,12 @@ h1 {
 
 h2 {
   font-family: 'Raleway', sans-serif;
-  font-size: 5em;
+  font-size: 5vw;
 }
 
 p {
   font-family: 'Raleway', sans-serif;
-  font-size: 2em;
+  font-size: 2vw;
 }
 
 #begin {
@@ -48,9 +48,10 @@ p {
   align-items: center;
   color: white;
   font-family: 'Raleway', sans-serif;
-  font-size: 5em;
+  font-size: 5vw;
   padding: 0;
   background-color: black;
+  transition: all 2.5s;
 }
 
 .fade {
@@ -85,13 +86,13 @@ p {
 
 .arrow-box {
   position: absolute;
-  bottom: 1em;
+  bottom: 1.5vw;
 }
 
 .left-arrow {
   cursor: pointer;
   color: white;
-  font-size: 1em;
+  font-size: 1.5vw;
 }
 
 .left-arrow.disabled {
@@ -102,7 +103,7 @@ p {
 .right-arrow {
   cursor: pointer;
   color: white;
-  font-size: 1em;
+  font-size: 1.5vw;
   margin-right: 4%;
 }
 
@@ -119,7 +120,7 @@ p {
   z-index: 100;
   color: white;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 1.5em;
+  font-size: 1.6vw;
   padding: 10px;
   text-align: justify;
 }
