@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <div id="loadOverlay" style="background-color:#333; position:absolute; top:0; left:0; width:100%; height:100%; z-index:10000;"></div>
     <meta charset="UTF-8"/>
-        <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+        <link rel="icon" type="image/svg+xml" href="stars.svg"/>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +12,7 @@
     <link href="/style.css" rel="stylesheet">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Three Test</title>
+    <title>Gemini</title>
 </head>
 <body hidden>
 <div id="loading">
@@ -20,7 +21,7 @@
 <div id="loaded">
     <div id="gui"></div>
     <canvas id="bg"></canvas>
-    <div id="begin">Click anywhere to begin</div>
+    <div id="begin" class="fade">Click anywhere to begin</div>
     <script type="module" src="/main.js"></script>
     <section>
         <div id="display-box" class="shrink" hidden>

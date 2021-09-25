@@ -50,6 +50,13 @@ p {
   font-family: 'Raleway', sans-serif;
   font-size: 5em;
   padding: 0;
+  background-color: black;
+}
+
+.fade {
+  opacity: 0;
+  background-color: transparent;
+  transition: all 1.5s;
 }
 
 #loading {
@@ -153,3 +160,5 @@ p {
   left: 2px;
   z-index: 10000;
 }
+
+#loadOverlay{display: none !important;}

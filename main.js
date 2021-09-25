@@ -4,7 +4,6 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {GridHelper} from "three";
 import {typewriter, clearTypewriter, hideElement, showElement, changeDisplay, flashDisplay} from "./helpers";
 import * as TH from "./ThreeHelper";
-import {GUI} from "three/examples/jsm/libs/dat.gui.module";
 
 document.addEventListener("DOMContentLoaded", function(){
     document.body.removeAttribute('hidden');
@@ -18,7 +17,6 @@ document.querySelector('.right-arrow').addEventListener('click', event => {
     nextStep();
 });
 document.querySelector('#begin').addEventListener('click', event => {
-    document.querySelector('#begin').style.visibility = "hidden";
     nextStep();
 });
 
@@ -208,6 +206,7 @@ function loopDemo()
     document.querySelector('#loading').classList.add('loaded');
     setTimeout(() => {
         document.querySelector('#loading').remove();
+        document.querySelector('#begin').classList.remove('fade');
     }, 1000)
 }
 
@@ -266,20 +265,24 @@ const headerTypingSpeed = 100;
 // Zoom out
 function one_two() {
     startTransition();
-    TH.smoothChangeFov(camera, 110, 11000);
+    TH.smoothChangeFov(camera, 110, 12000);
 
-    let timer = 0;
+    let timer = 1000;
 
-    typewriter('Welcome', 'header', headerTypingSpeed);
-    timer = timer + 2000;
+    document.querySelector('#begin').classList.add('fade');
+
+    setTimeout(() => {document.querySelector('#begin').style.visibility = 'hidden'}, timer)
+    timer += 1000;
+    setTimeout(() => typewriter('Welcome', 'header', headerTypingSpeed), timer);
+    timer += 2000;
     setTimeout(() => typewriter('Three.js demo', 'header', headerTypingSpeed), timer);
-    timer = timer + 3000;
+    timer += 3000;
     setTimeout(() => typewriter('Sit back and enjoy', 'header', headerTypingSpeed), timer);
-    timer = timer + 5000;
+    timer += 5000;
     setTimeout(() => hideElement('header'), timer);
-    timer = timer + 500;
+    timer += 500;
     setTimeout(flashDisplay, timer);
-    timer = timer + 500;
+    timer += 500;
     setTimeout(() => {
         changeDisplay('center');
         setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', 6, endTransition), 500);

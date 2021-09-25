@@ -5,7 +5,7 @@ import {GUI} from "three/examples/jsm/libs/dat.gui.module";
 const makeGui = () => {
     let gui = new GUI({ autoPlace: false });
     let customContainer = document.querySelector('#gui');
-    customContainer.appendChild(gui.domElement);
+    // customContainer.appendChild(gui.domElement);
     return gui;
 }
 
