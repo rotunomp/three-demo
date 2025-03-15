@@ -1,3 +1,7 @@
+html {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
 canvas {
   position: fixed;
   top: 0;
@@ -14,8 +18,8 @@ main {
 
 h1 {
   color: #FFFFFF;
-  font-family: 'Raleway', sans-serif;
-  font-size: 8vw;
+  /*font-family: 'Raleway', sans-serif;*/
+  font-size: 6vw;
   margin: 0;
 }
 
@@ -27,12 +31,12 @@ h1 {
 }
 
 h2 {
-  font-family: 'Raleway', sans-serif;
+  /*font-family: 'Raleway', sans-serif;*/
   font-size: 5vw;
 }
 
 p {
-  font-family: 'Raleway', sans-serif;
+  /*font-family: 'Raleway', sans-serif;*/
   font-size: 2vw;
 }
 
@@ -47,7 +51,7 @@ p {
   justify-content: center;
   align-items: center;
   color: white;
-  font-family: 'Raleway', sans-serif;
+  /*font-family: 'Raleway', sans-serif;*/
   font-size: 5vw;
   padding: 0;
   background-color: black;

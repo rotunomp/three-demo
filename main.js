@@ -262,6 +262,10 @@ function loadStep(increment) {
 const displayTypingSpeed = 6;
 const headerTypingSpeed = 100;
 
+const twoText = `Welcome to my three.js demo. This is a fun little project I worked on to explore a Javascript library I was interested in trying out. Try moving around to the next page!`;
+const threeText = `These fun little 3D objects are geometries in a scene. Three.js allows you to move, rotate, add textures to bring them to life`;
+const fourText = `Three.js also provides you with a camera, which is what you're using to view the scene. As you click "Next" and "Back", I reposition the camera to move you around in space. Imagine all the fun things you could add to your website!`;
+
 // Zoom out
 function one_two() {
     startTransition();
@@ -277,7 +281,7 @@ function one_two() {
     timer += 2000;
     setTimeout(() => typewriter('Three.js demo', 'header', headerTypingSpeed), timer);
     timer += 3000;
-    setTimeout(() => typewriter('Sit back and enjoy', 'header', headerTypingSpeed), timer);
+    setTimeout(() => typewriter('Stick around and enjoy', 'header', headerTypingSpeed), timer);
     timer += 5000;
     setTimeout(() => hideElement('header'), timer);
     timer += 500;
@@ -285,7 +289,7 @@ function one_two() {
     timer += 500;
     setTimeout(() => {
         changeDisplay('center');
-        setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', 6, endTransition), 500);
+        setTimeout(() => typewriter(twoText, 'display-box-content', 6, endTransition), 500);
     }, timer)
 }
 
@@ -296,7 +300,7 @@ function two_three() {
     flashDisplay();
     setTimeout(() => changeDisplay('left'), 500);
     // changeDisplay('left');
-    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
+    setTimeout(() => typewriter(threeText, 'display-box-content', displayTypingSpeed, endTransition), 1000);
 }
 
 function three_two() {
@@ -304,7 +308,7 @@ function three_two() {
     TH.smoothCameraPosition(camera, {x: 0, y: 0, z: cameraInitZ}, 1000)
     flashDisplay();
     setTimeout(() => changeDisplay('center'), 500);
-    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
+    setTimeout(() => typewriter(twoText, 'display-box-content', displayTypingSpeed, endTransition), 1000);
 }
 
 // Move to Box wireframe
@@ -313,7 +317,7 @@ function three_four () {
     TH.smoothCameraPosition(camera, {x: boxInitX + 10, y: boxInitY, z: cameraInitZ - 10}, 1000)
     flashDisplay();
     setTimeout(() => changeDisplay('right'), 500);
-    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
+    setTimeout(() => typewriter(fourText, 'display-box-content', displayTypingSpeed, endTransition), 1000);
 }
 
 function four_three() {
@@ -322,7 +326,7 @@ function four_three() {
     flashDisplay();
     setTimeout(() => changeDisplay('left'), 500);
     // changeDisplay('left');
-    setTimeout(() => typewriter('Lorem Ipsum, sometimes referred to as \'lipsum\', is the placeholder text used in design when creating content. It helps designers plan out where the content will sit, without needing to wait for the content to be written and approved. It originally comes from a Latin text, but to today\'s reader, it\'s seen as gibberish.', 'display-box-content', displayTypingSpeed, endTransition), 1000);
+    setTimeout(() => typewriter(threeText, 'display-box-content', displayTypingSpeed, endTransition), 1000);
 }
 
 function five_four() {
