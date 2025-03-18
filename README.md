@@ -5,7 +5,7 @@ This is a small project demoing the three.js library with some space-themed flai
 
 ## Installation
 
-Clone the repo and run Vite
+Install dependencies and run Vite
 ```
 npm ci
 ```
